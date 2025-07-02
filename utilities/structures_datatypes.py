@@ -1,5 +1,32 @@
+# utilities/structures_datatypes
+
 def get_valid_datatypes(file_name: str) -> dict:
-    if file_name == "cmdr_log_auditoria.xlsx":
+    if file_name == "cmdr_glosas_parciales_adres.xlsx":
+        return {
+            "numero_paquete": "int64",
+            "id_reclamacion": "int64",
+            "numero_radicado": "int64",
+            "id_item": "int64",
+            "codigo_glosa": "int64",
+            "anotacion": "object",
+            "cantidad_aprobado": "int64",
+            "valor_unitario_aprobado": "float64",
+            "valor_total_aprobado": "float64",
+            "valor_total_glosado": "float64",
+            "id_componente": "int64",
+            "estado": "int64",
+            "created_at": "datetime64[ns]"
+        }
+    elif file_name == "cmdr_glosas_totales_masivas.xlsx":
+        return {
+            "id_entrega": "int64",
+            "id_reclamacion": "int64",
+            "numero_radicado": "int64",
+            "codigo_glosa": "int64",
+            "anotacion": "object",
+            "id_componente": "int64"
+        }
+    elif file_name == "cmdr_log_auditoria.xlsx":
         return {
             "log_name": "object",
             "event": "object",
@@ -13,4 +40,3 @@ def get_valid_datatypes(file_name: str) -> dict:
             "updated_at": "datetime64[ns]"
         }
     return {}
-

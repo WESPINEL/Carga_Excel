@@ -1,5 +1,5 @@
 """
-database.py
+# utilities/database.py
 """
 
 from sqlalchemy import create_engine, Engine, text, URL, select, CursorResult
@@ -36,7 +36,7 @@ def close_db_connection(connection_engine: Engine):
 def query_last_id(connection_engine: Engine, table_name: str) -> int:
     try:
         with connection_engine.connect() as connection:
-            sql_query: Select = text(f'SELECT MAX(id) FROM auditoria_nueva.{table_name}')
+            sql_query: Select = text(f'SELECT MAX(id) FROM cargues_masivos.{table_name}')
             cursor: CursorResult = connection.execute(sql_query)
             row = cursor.fetchone()
             last_id = int(row[0]) if row[0] is not None else 0

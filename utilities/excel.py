@@ -30,7 +30,7 @@ def validate_excel(file_path: str, file_name: str) -> bool:
         print(f"❌ Validación fallida: {e}")
         return False
 
-def insert_excel_records(connection_engine: Engine, table_name: str, schema: str = "auditoria_nueva") -> int:
+def insert_excel_records(connection_engine: Engine, table_name: str, schema: str = "cargues_masivos") -> int:
     global df
     try:
         initial_count = query_last_id(connection_engine, table_name)

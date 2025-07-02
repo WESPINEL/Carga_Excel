@@ -25,18 +25,14 @@ def load_ssh_config():
         "SSH_KEY_FILENAME": os.getenv("SSH_KEY_FILENAME")
     }
 
-if __name__ == "__main__":
-    file_name = "cmdr_log_auditoria.xlsx"
-    file_path = os.path.abspath(os.path.join(os.path.dirname(__file__), file_name))
-    table_name = "cmdr_log_auditoria"
-    # use_ssh = os.getenv("DB_USE_SSH", "0") == "1"
-    use_ssh = os.getenv("DB_USE_SSH", "false").lower() == "true"
+def get_table_name_from_file(file_name: str) -> str:
+    # Elimina la extensión y asume que ese es el nombre de la tabla
+    return os.path.splitext(file_name)[0]
 
-    # Validar Excel
-    excel_handler = ExcelHandler(file_path, file_name)
-    if not excel_handler.validate():
-        print("❌ El archivo Excel no pasó la validación. Abortando.")
-        exit(1)
+if __name__ == "__main__":
+    input_dir = os.path.abspath(os.path.join(os.path.dirname(__file__), "input"))
+    os.makedirs(input_dir, exist_ok=True)
+    use_ssh = os.getenv("DB_USE_SSH", "false").lower() == "true"
 
     # Conexión DB
     conf = load_config()
@@ -44,9 +40,20 @@ if __name__ == "__main__":
     db = Database(conf, ssh_conf, use_ssh)
     db.connect()
 
-    # Cargar datos
-    insert_excel_records(db.engine, table_name)
+    for file_name in os.listdir(input_dir):
+        if file_name.endswith(".xlsx"):
+            file_path = os.path.join(input_dir, file_name)
+            table_name = get_table_name_from_file(file_name)
 
-    # Cerrar conexión
+            print(f"\n📄 Procesando archivo: {file_name} → tabla: {table_name}")
+            
+            excel_handler = ExcelHandler(file_path, file_name)
+            if not excel_handler.validate():
+                print(f"❌ El archivo {file_name} no pasó la validación. Saltando.")
+                continue
+
+            insert_excel_records(db.engine, table_name)
+            excel_handler.clear()
+
     db.close()
-    excel_handler.clear()
+    print("\n✅ Proceso completado para todos los archivos.")
